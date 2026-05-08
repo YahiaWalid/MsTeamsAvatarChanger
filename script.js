@@ -29,63 +29,80 @@ downloadBtn.addEventListener("click", downloadAvatar);
 
 function downloadAvatar() {
 
-    const exportSize = 2048;
-
-    const canvas = document.createElement("canvas");
-
-    canvas.width = exportSize;
-    canvas.height = exportSize;
-
-    const ctx = canvas.getContext("2d");
-
-    // Better smoothing
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-
-    // Draw circle
-    ctx.fillStyle = bgColorInput.value;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        exportSize / 2,
-        exportSize / 2,
-        exportSize / 2,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    // Text settings
-    ctx.fillStyle = textColorInput.value;
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    // Teams-like font weight
-    ctx.font = `700 ${exportSize * 0.42}px "Segoe UI", Arial, sans-serif`;
-
-    // Sharper rendering
-    ctx.shadowColor = "transparent";
+    const exportSize = 4096;
 
     const initials = initialsInput.value.toUpperCase();
 
-    // Slight vertical correction
-    ctx.fillText(
-        initials,
-        exportSize / 2,
-        exportSize / 2 + exportSize * 0.03
-    );
+    const bgColor = bgColorInput.value;
 
-    // Export with maximum quality
-    const image = canvas.toDataURL("image/png", 1.0);
+    const textColor = textColorInput.value;
 
-    const link = document.createElement("a");
+    // Create SVG
+    const svg = `
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="${exportSize}"
+        height="${exportSize}"
+        viewBox="0 0 ${exportSize} ${exportSize}"
+    >
+        <circle
+            cx="${exportSize / 2}"
+            cy="${exportSize / 2}"
+            r="${exportSize / 2}"
+            fill="${bgColor}"
+        />
 
-    link.download = "teams-avatar.png";
+        <text
+            x="50%"
+            y="54%"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-family="Segoe UI, Arial, sans-serif"
+            font-size="${exportSize * 0.40}"
+            font-weight="700"
+            fill="${textColor}"
+        >
+            ${initials}
+        </text>
+    </svg>
+    `;
 
-    link.href = image;
+    // Convert SVG to image
+    const blob = new Blob([svg], {
+        type: "image/svg+xml;charset=utf-8"
+    });
 
-    link.click();
+    const url = URL.createObjectURL(blob);
+
+    const img = new Image();
+
+    img.onload = function () {
+
+        const canvas = document.createElement("canvas");
+
+        canvas.width = exportSize;
+        canvas.height = exportSize;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
+        ctx.drawImage(img, 0, 0);
+
+        URL.revokeObjectURL(url);
+
+        // Export PNG
+        const png = canvas.toDataURL("image/png", 1.0);
+
+        const link = document.createElement("a");
+
+        link.download = "teams-avatar.png";
+
+        link.href = png;
+
+        link.click();
+    };
+
+    img.src = url;
 }
