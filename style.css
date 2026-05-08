@@ -101,3 +101,32 @@ input[type="color"] {
 
     user-select: none;
 }
+.button-section {
+    margin-top: 35px;
+
+    display: flex;
+    justify-content: center;
+}
+
+#downloadBtn {
+    background-color: #6264A7;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 14px 28px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+#downloadBtn:hover {
+    transform: translateY(-2px);
+
+    opacity: 0.95;
+}
