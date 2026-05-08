@@ -29,46 +29,63 @@ downloadBtn.addEventListener("click", downloadAvatar);
 
 function downloadAvatar() {
 
+    const exportSize = 2048;
+
     const canvas = document.createElement("canvas");
 
-    const size = 1024;
-
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = exportSize;
+    canvas.height = exportSize;
 
     const ctx = canvas.getContext("2d");
 
-    // Transparent background automatically exists
+    // Better smoothing
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     // Draw circle
     ctx.fillStyle = bgColorInput.value;
 
     ctx.beginPath();
 
-    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    ctx.arc(
+        exportSize / 2,
+        exportSize / 2,
+        exportSize / 2,
+        0,
+        Math.PI * 2
+    );
 
     ctx.fill();
 
-    // Draw text
+    // Text settings
     ctx.fillStyle = textColorInput.value;
-
-    ctx.font = "600 420px Segoe UI";
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
+    // Teams-like font weight
+    ctx.font = `700 ${exportSize * 0.42}px "Segoe UI", Arial, sans-serif`;
+
+    // Sharper rendering
+    ctx.shadowColor = "transparent";
+
+    const initials = initialsInput.value.toUpperCase();
+
+    // Slight vertical correction
     ctx.fillText(
-        initialsInput.value.toUpperCase(),
-        size / 2,
-        size / 2 + 10
+        initials,
+        exportSize / 2,
+        exportSize / 2 + exportSize * 0.03
     );
 
-    // Download image
+    // Export with maximum quality
+    const image = canvas.toDataURL("image/png", 1.0);
+
     const link = document.createElement("a");
 
     link.download = "teams-avatar.png";
 
-    link.href = canvas.toDataURL("image/png");
+    link.href = image;
 
     link.click();
 }
