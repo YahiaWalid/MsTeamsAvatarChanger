@@ -37,7 +37,7 @@ function downloadAvatar() {
 
     const textColor = textColorInput.value;
 
-    // Create SVG
+    // Create SVG — full square fill so Teams' own circular crop is seamless
     const svg = `
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -45,21 +45,20 @@ function downloadAvatar() {
         height="${exportSize}"
         viewBox="0 0 ${exportSize} ${exportSize}"
     >
-        <circle
-            cx="${exportSize / 2}"
-            cy="${exportSize / 2}"
-            r="${exportSize / 2}"
+        <rect
+            width="${exportSize}"
+            height="${exportSize}"
             fill="${bgColor}"
         />
 
         <text
             x="50%"
-            y="54%"
+            y="53%"
             text-anchor="middle"
             dominant-baseline="middle"
             font-family="Segoe UI, Arial, sans-serif"
-            font-size="${exportSize * 0.40}"
-            font-weight="700"
+            font-size="${exportSize * 0.43}"
+            font-weight="600"
             fill="${textColor}"
         >
             ${initials}
